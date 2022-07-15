@@ -2,7 +2,7 @@ import json
 from config import URL, API_KEY, RULES
 import requests
 
-from saved_file.sms import check_notify_rules, send_sms
+from sms import check_notify_rules, send_sms
 from sendemail import send_email
 
 
