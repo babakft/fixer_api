@@ -1,7 +1,7 @@
 import json
-from property import URL, API_KEY, RULES
+from config import URL, API_KEY, RULES
 import requests
-import smtplib
+from sendemail import send_email
 
 
 def api_result():
@@ -21,30 +21,16 @@ def api_result():
 
 
 def commit_rules_save(file_name, file_input):
-    if RULES["SAVE"]:
         keyfile = open(f'saved_file/{file_name}.json', "w")
         keyfile.write(json.dumps(file_input))
         keyfile.close()
 
 
-def send_email(rates):
-    sender = "babakft082@gmail.com"
-    receiver = "babakft082@gmail.com.com"
-
-    message = f"""\
-Subject: Hi Mailtrap
-To: {receiver}
-From: {sender}
-
-{rates}."""
-    with smtplib.SMTP("smtp.mailtrap.io", 2525) as server:
-        server.login("261f765550ac77", "669f7100c11602")
-        server.sendmail(sender, receiver, message)
-
-
 if __name__ == "__main__":
-    result = api_result()
-    json_result = json.loads(result)
-    print(result)
-    commit_rules_save(json_result["timestamp"], json_result["rates"])
-    send_email(json_result['rates'])
+
+    json_result = json.loads(api_result())
+    print(json_result)
+    if RULES["save"]:
+        commit_rules_save(json_result["timestamp"], json_result["rates"])
+    if RULES["email"]["enable"]:
+        send_email(json_result['rates'])
