@@ -1,10 +1,15 @@
 import json
 from config import URL, API_KEY, RULES
 import requests
+
+from saved_file.sms import check_notify_rules, send_sms
 from sendemail import send_email
 
 
 def api_result():
+    """
+    getting json from site and reading it
+    """
     payload = {}
     headers = {
         "apikey": API_KEY
@@ -21,16 +26,22 @@ def api_result():
 
 
 def commit_rules_save(file_name, file_input):
-        keyfile = open(f'saved_file/{file_name}.json', "w")
-        keyfile.write(json.dumps(file_input))
-        keyfile.close()
+    """
+    saving file in saves_file
+    """
+    keyfile = open(f'saved_file/{file_name}.json', "w")
+    keyfile.write(json.dumps(file_input))
+    keyfile.close()
 
 
 if __name__ == "__main__":
-
     json_result = json.loads(api_result())
-    print(json_result)
+    print(api_result())
     if RULES["save"]:
         commit_rules_save(json_result["timestamp"], json_result["rates"])
     if RULES["email"]["enable"]:
         send_email(json_result['rates'])
+    if RULES['notification']['enable']:
+        notification_msg = check_notify_rules(json_result["rates"])
+        if notification_msg:
+            send_sms(notification_msg)
