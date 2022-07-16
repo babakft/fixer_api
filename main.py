@@ -8,7 +8,7 @@ from sendemail import send_email
 
 def iran_time():
     time = JalaliDatetime.now()
-    return f'{time.year}/{time.month}/{time.day}'
+    return f'{time.year}/{time.month}/{time.day} \n'
 
 
 def api_result():
