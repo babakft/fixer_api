@@ -1,9 +1,14 @@
 import json
 from config import URL, API_KEY, RULES
 import requests
-
+from khayyam import JalaliDatetime
 from sms import check_notify_rules, send_sms
 from sendemail import send_email
+
+
+def iran_time():
+    time = JalaliDatetime.now()
+    return f'{time.year}/{time.month}/{time.day}'
 
 
 def api_result():
@@ -30,7 +35,7 @@ def commit_rules_save(file_name, file_input):
     saving file in saves_file
     """
     keyfile = open(f'saved_file/{file_name}.json', "w")
-    keyfile.write(json.dumps(file_input))
+    keyfile.write(iran_time() + json.dumps(file_input))
     keyfile.close()
 
 
